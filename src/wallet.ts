@@ -141,7 +141,7 @@ export class LNBitsWalletClass {
   }): Promise<UrlParse> => {
     this.api.defaults.headers['X-Api-Key'] = this.invoiceReadKey;
     return await this.api
-      .get(`/lnurlscan/${nsUrl}`)
+      .get(`/lnurlscan/${params.nsUrl}`)
       .then((res: { data: UrlParse }) => {
         return res.data;
       })
