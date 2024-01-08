@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosInstance } from 'axios';
+ import axios, { AxiosError, AxiosInstance } from 'axios';
 
 interface LNBitsConfig {
   adminKey: string;
@@ -42,6 +42,12 @@ interface UrlParse {
     description_hash: string;
     description: string;
     targetUser: string;
+}
+
+interface PayLnUrl {
+    success_action : any;
+    payment_hash: string;
+    checking_id: string;
 }
 
 export class LNBitsWalletClass {
@@ -115,6 +121,26 @@ export class LNBitsWalletClass {
     return await this.api
       .post(`/payments`, params)
       .then((res: { data: PayInvoice }) => {
+        return res.data;
+      })
+      .catch((err: AxiosError) => {
+        throw err;
+      });
+  };
+
+  payLnUrl = async (
+    params: {
+      callback: string;
+      description_hash: string;
+      amount: number;
+      comment: string;
+      description: string;
+    }
+  ): Promise<PayLnUrl> => {
+    this.api.defaults.headers['X-Api-Key'] = this.adminKey;
+    return await this.api
+      .post(`/payments/lnurl`, params)
+      .then((res: { data: PayLnUrl }) => {
         return res.data;
       })
       .catch((err: AxiosError) => {
