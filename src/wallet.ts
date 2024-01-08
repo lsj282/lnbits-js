@@ -27,6 +27,23 @@ interface CheckInvoice {
   payment_hash: string;
 }
 
+interface UrlParse {
+    domain: string;
+    callback: string;
+    maxSendable: number;
+    minSendable: number;
+    metadata: Array<[string, string]>;
+    commentAllowed: number;
+    tag: string;
+    allowsNostr: boolean;
+    nostrPubkey: string;
+    kind: string;
+    fixed: boolean;
+    description_hash: string;
+    description: string;
+    targetUser: string;
+}
+
 export class LNBitsWalletClass {
   private adminKey = '';
   private invoiceReadKey = '';
@@ -112,6 +129,20 @@ export class LNBitsWalletClass {
     return await this.api
       .get(`/payments/${params.payment_hash}`)
       .then((res: { data: CheckInvoice }) => {
+        return res.data;
+      })
+      .catch((err: AxiosError) => {
+        throw err;
+      });
+  };
+
+  parseUrl = async (params: {
+    url: string;
+  }): Promise<UrlParse> => {
+    this.api.defaults.headers['X-Api-Key'] = this.invoiceReadKey;
+    return await this.api
+      .get(`/lnurlscan/${url}`)
+      .then((res: { data: UrlParse }) => {
         return res.data;
       })
       .catch((err: AxiosError) => {
